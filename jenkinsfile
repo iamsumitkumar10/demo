@@ -1,2 +1,58 @@
-https://github.com/iamsumitkumar10/demo.git
 
+pipeline {
+    agent any
+    tools{
+        tool:'NodeJs'
+    }
+
+    environment {
+        NODE_VERSION = "18"
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                script {
+                    git url:"https://github.com/iamsumitkumar10/demo/",branch:"main"
+                    
+                }
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    echo "Installing dependencies..."
+                    sh 'npm install'
+                }
+            }
+        }
+        stage('run project') {
+            steps {
+                script {
+                    echo "Running project..."
+                    sh "npm run dev"
+                }
+            }
+        }
+
+        stage('Build Project') {
+            steps {
+                script {
+                    echo "Building project..."
+                    sh 'npm run build'
+                }
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo "Deployment successful!"
+        }
+        failure {
+            echo "Deployment failed!"
+        }
+    }
+}
